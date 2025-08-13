@@ -1,0 +1,260 @@
+/*
+Noah Zhou Lab 8
+CNIT 392 Spring 2024
+Software Used: Oracle SQL Developer
+*/
+
+--*********************************************************************************
+--Question 1
+--Display the product type (ProdType) and the number of products in each type.
+
+SELECT ProdType, SUM(Available_Quantity) AS Available_Quantity
+FROM Product
+GROUP BY ProdType;
+
+/*
+Results:
+PRODTYPE        AVAILABLE_QUANTITY
+--------------- ------------------
+red                           1788
+white                          297
+rose                           347
+sparkling                      781
+
+4 rows selected.
+*/
+
+--*********************************************************************************
+--Question 2
+/*
+Display the product type (ProdType) and the number of products in each type
+only when the number of products is greater than 5.
+*/
+
+SELECT DISTINCT ProdType, SUM(Available_Quantity) AS Available_Quantity
+FROM Product
+WHERE Available_Quantity > 5
+GROUP BY ProdType;
+
+/*
+Results:
+PRODTYPE        AVAILABLE_QUANTITY
+--------------- ------------------
+red                           1780
+white                          297
+rose                           347
+sparkling                      780
+
+4 rows selected.
+*/
+
+--*********************************************************************************
+
+--Question 3
+/*
+Display all supplier names (SupName) and their product names (ProdName), sort the results in
+alphabetical order on supplier name (SupName).
+*/
+
+SELECT sr.SupName, ProdName
+FROM Supplier sr INNER JOIN Supplies ss
+ON sr.SupNR = ss.SupNR
+INNER JOIN Product p
+ON ss.ProdNR = p.ProdNR
+ORDER BY SupName;
+
+/*
+Results:
+SUPNAME                                  PRODNAME
+---------------------------------------- ------------------------------------------------------------
+Ad Fundum                                Domaine Trapet Père & Fils, Gevrey-Chambertin, 2008
+Ad Fundum                                Meerdael, Methode Traditionnelle Chardonnay, 2014
+Ad Fundum                                Chateau Petrus, 1975
+Ad Fundum                                Casa Silva, Los Lingues, Carmenere, 2012
+Best Wines                               Veuve-Cliquot, Brut, 2012
+Best Wines                               Le Brun Servenay, Brut, 2008
+Best Wines                               Chateau Talbot, Saint-Julien, Grand Cru Classe, 2002
+Best Wines                               Chateau Haut Brion, 2008
+Best Wines                               Conde de Hervías,  Rioja, 2004
+Best Wines                               Chateau De La Tour, Clos-Vougeot, Grand cru, 2008
+Deliwines                                Meerdael, Methode Traditionnelle Chardonnay, 2014
+Deliwines                                Chateau Miraval, Cotes de Provence Rose, 2015
+SUPNAME                                  PRODNAME
+---------------------------------------- ------------------------------------------------------------
+Deliwines                                Domaine Trapet Père & Fils, Gevrey-Chambertin, 2008
+Deliwines                                Gallo Family Vineyards, Grenache, 2014
+Deliwines                                Chateau Haut-Bailly, Pessac-Leognan, Grand Cru Classe, 1968
+Deliwines                                Dominio de Pingus, Ribera del Duero, Tempranillo, 2006
+Deliwines                                Chateau Corbin-Despagne, Saint-Emilion, 2005
+Deliwines                                Chateau La Croix Saint-Michel, 2011
+Deliwines                                Chateau Saint Estève de Neri, 2015
+The Wine Crate                           Chateau Petrus, 1975
+The Wine Crate                           Jacques Selosse, Brut Initial, 2012
+The Wine Crate                           Chateau Haut Brion, 2008
+The Wine Crate                           Meerdael, Methode Traditionnelle Chardonnay, 2014
+The Wine Crate                           Meneghetti, Chardonnay, 2010
+SUPNAME                                  PRODNAME
+---------------------------------------- ------------------------------------------------------------
+The Wine Crate                           Trimbach, Riesling, 1989
+The Wine Crate                           Chateau Andron Blanquet, Saint Estephe, 1979
+The Wine Crate                           Chateau De La Tour, Clos-Vougeot, Grand cru, 2008
+The Wine Depot                           Domaine Trapet Père & Fils, Gevrey-Chambertin, 2008
+The Wine Depot                           Chateau La Croix Saint-Michel, 2011
+The Wine Depot                           Billecart-Salmon, Brut Réserve, 2014
+The Wine Depot                           Chateau des Rontets, Chardonnay, Birbettes
+The Wine Depot                           Meerdael, Methode Traditionnelle Chardonnay, 2014
+The Wine Depot                           Chateau Talbot, Saint-Julien, Grand Cru Classe, 2002
+The Wine Depot                           Gallo Family Vineyards, Grenache, 2014
+The Wine Depot                           Chateau Mouton-Rotshild, Pauillac, 2007
+The Wine Depot                           Moët & Chandon, Rosé, Imperial, 2014
+SUPNAME                                  PRODNAME
+---------------------------------------- ------------------------------------------------------------
+Vinos del Mundo                          Casa Silva, Los Lingues, Carmenere, 2012
+Vinos del Mundo                          Jacques Selosse, Brut Initial, 2012
+Vinos del Mundo                          Chateau Batailley, Grand Cru Classé, 1975
+Vinos del Mundo                          Chateau Corbin-Despagne, Saint-Emilion, 2005
+Vinos del Mundo                          'Clos D'Opleeuw, Chardonnay, 2012'
+Vinos del Mundo                          Conde de Hervías,  Rioja, 2004
+Vinos del Mundo                          Meerdael, Methode Traditionnelle Chardonnay, 2014
+Wine Trade Logistics                     Domaine Trapet Père & Fils, Gevrey-Chambertin, 2008
+Wine Trade Logistics                     Chateau Petrus, 1975
+Wine Trade Logistics                     Conde de Hervías,  Rioja, 2004
+Wine Trade Logistics                     Veuve-Cliquot, Brut, 2012
+Wine Trade Logistics                     Chateau des Rontets, Chardonnay, Birbettes
+SUPNAME                                  PRODNAME
+---------------------------------------- ------------------------------------------------------------
+Wine Trade Logistics                     Champagne Boizel, Brut, Réserve, 2010
+Wine Trade Logistics                     Chateau Corbin-Despagne, Saint-Emilion, 2005
+Wine Trade Logistics                     Chateau Coupe Roses, Granaxa, 2011
+
+51 rows selected.
+*/
+
+--*********************************************************************************
+--Question 4
+--Display ONLY the supplier name (SupName) who has the most orders in Purchase_Order table.
+
+SELECT SupName FROM Supplier
+WHERE SupNR IN
+(SELECT MAX(COUNT(SupNR)) FROM Purchase_Order GROUP BY SupNR)
+
+/*
+Results:
+SUPNAME
+----------------------------------------
+Ad Fundum
+
+1 row selected.
+*/
+
+--*********************************************************************************
+--Question 5
+/*
+Use a MINUS statement, list product numbers (ProdNR) that are in Product table but have never been
+ordered.
+*/
+
+SELECT ProdNR FROM Product
+MINUS
+SELECT ProdNR FROM Po_Line
+
+/*
+Results:
+PRODNR
+------
+0119
+0154
+0199
+0219
+0238
+0265
+0289
+0300
+0327
+0331
+0384
+0404
+PRODNR
+------
+0468
+0474
+0494
+0523
+0637
+0760
+0832
+0838
+0899
+
+21 rows selected.
+*/
+
+--*********************************************************************************
+--Question 6
+/*
+Display the supplier name (SupName) and purchase date (PoDate) for all suppliers despite if an order
+was ever purchased through the supplier or not. Sort the results on supplier name in alphabetic order.
+*/
+
+SELECT SupName, PoDate
+FROM Purchase_Order po RIGHT JOIN Supplier sr
+ON po.SupNR = sr.SupNR
+ORDER BY SupName;
+
+/*
+Results:
+SUPNAME                                  PODATE
+---------------------------------------- ---------
+Ad Fundum                                24-MAR-15
+Ad Fundum                                19-APR-15
+Ad Fundum                                10-MAY-15
+Ad Fundum                                13-MAY-15
+Ad Fundum                                11-APR-15
+Best Wines                               05-MAY-15
+Best Wines                               12-APR-15
+Deliwines
+Spirits & co.
+The Wine Crate                           10-APR-15
+The Wine Depot                           01-MAY-15
+Vinos del Mundo                          27-APR-15
+SUPNAME                                  PODATE
+---------------------------------------- ---------
+Wine Trade Logistics
+
+13 rows selected.
+*/
+--*********************************************************************************
+--Question 7
+/*
+Create a view called Order_Per_Month that lists the number of purchase orders per month. The view
+needs to have two columns: month and year in one column; and number of purchases of that month in
+another column. Query the view to verify your results.
+*/
+
+CREATE VIEW Order_Per_Month AS
+SELECT TO_CHAR(PoDate,'fmMONTH,YYYY')AS Month_Year, COUNT(PoNR) AS Number_Of_Purchases
+FROM Purchase_Order
+GROUP BY TO_CHAR(PoDate,'fmMONTH,YYYY');
+
+SELECT * FROM Order_Per_Month;
+
+/*
+Results:
+View ORDER_PER_MONTH created.
+
+MONTH_YEAR     NUMBER_OF_PURCHASES
+-------------- -------------------
+MARCH,2015                       1
+APRIL,2015                       5
+MAY,2015                         4
+
+3 rows selected.
+*/
+--*********************************************************************************
+--Question 8
+/*
+Include the following code at the end of your file: DROP VIEW Order_Per_Month;
+*/
+
+DROP VIEW Order_Per_Month;
+--*********************************************************************************
